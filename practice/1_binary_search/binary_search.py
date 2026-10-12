@@ -26,7 +26,7 @@ def input_int(prompt: str) -> int:
         value = input(prompt)
         try:
             return int(value)
-        except:
+        except:  # noqa: E722
             print("value must be int.")
 
 
