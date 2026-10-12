@@ -1,0 +1,65 @@
+@startuml Бинарный поиск числа в заданном диапазоне
+
+partition Ввод числа {
+    start
+    repeat
+        :Ввод value; <<input>>
+        backward :Вывод "введите целое число"; <<output>>
+    repeat while (value - целое число) is (Нет) not (Да)
+    :Вернуть value;
+    stop
+}
+
+partition binary_search {
+    start
+    :Аргументы: left, right, target, step = 1; <<input>>
+    :steps = -1;
+    while (left <= target <= right) is (Да)
+        :mid = (right + left) // 2;
+        :Вывод step, left, right, mid; <<output>>
+        if (target == mid) then (Да)
+            :Вывод "target найден"; <<output>>
+            :steps = step;
+            break
+        else (Нет)
+            if (target < mid) then (Да)
+                :right = mid - 1;
+                :Вывод "поиск левее"; <<output>>
+            else (Нет)
+                :left = mid + 1;
+                :Вывод "поиск правее"; <<output>>
+            endif
+            :step++;
+        endif
+    endwhile (Нет)
+
+    :Возврат steps; <<output>>
+    stop
+}
+
+start
+
+:Ввод min; <<procedure>>
+:Ввод max; <<procedure>>
+
+if (min > max) then (Да)
+    :Вывод "min > max"; <<output>>
+else (Нет)
+    :Ввод target; <<procedure>>
+
+    :left = min
+    right = max;
+
+    :binary_search; <<procedure>>
+
+    if (steps == -1) then (Да)
+        :Вывод "target не входит в диапазон"; <<output>>
+    else (Нет)
+        :range = max - min
+        max_steps = ceil(log2(range + 1));
+        :Вывод range, max_steps; <<output>>
+    endif
+endif
+
+stop
+@enduml
