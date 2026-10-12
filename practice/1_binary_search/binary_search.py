@@ -47,7 +47,9 @@ def main() -> None:
 
     range = max - min
     max_steps = math.ceil(math.log2(range + 1))
-    print(f"theoretical max to find number in range {range} is {max_steps}")
+    print(
+        f"theoretical max number of steps to find number in range {range} is {max_steps}"
+    )
 
 
 if __name__ == "__main__":
