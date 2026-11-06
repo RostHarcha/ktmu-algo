@@ -23,6 +23,14 @@ prices_list: list[int] = [
     300,
 ]  # цена места в каждом ряду, руб.
 
+orders: list[list[int]] = [
+    [3, 7],
+    [1, 1],
+    [8, 5],
+    [10, 2],
+    [4, 0],
+]
+
 
 def main() -> None:
     hall = Hall(
@@ -41,6 +49,12 @@ def main() -> None:
     print(hall_view.get_rows_stats())
     print("===")
     print(hall_view.get_columns_stats())
+    print("===")
+    print(hall_view.get_reserve(orders))
+    print("===")
+    print(hall_view.get_multi_order(4))
+    print("===")
+    print(hall_view.get_lonely_seats())
 
 
 if __name__ == "__main__":

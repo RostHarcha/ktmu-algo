@@ -2,7 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from decimal import Decimal
 
-from hall import Hall
+from hall import Hall, SeatNotExistsError, SeatReservedError
 
 
 class ConsoleHallView:
@@ -19,7 +19,7 @@ class ConsoleHallView:
         for seat in self.hall:
             if seat.row > last_row:
                 last_row = seat.row
-                ret += f"\n{seat.row + 1}"
+                ret += f"\n{seat.row}"
             reserved = "X" if seat.reserved else "."
             ret += f"\t{reserved}"
         return ret
@@ -36,14 +36,13 @@ class ConsoleHallView:
         for seat in self.hall:
             if seat.reserved:
                 total_reserved += 1
-                price = self.hall.get_price(seat.row)
-                total_revenue += price
-                stats[seat.row].revenue += price
+                total_revenue += seat.price
+                stats[seat.row].revenue += seat.price
             else:
                 stats[seat.row].free += 1
         ret = "Статистика по рядам:\n"
         for row, row_data in stats.items():
-            ret += f"Ряд {row + 1}: свободно {row_data.free}, выручка {row_data.revenue}\n"
+            ret += f"Ряд {row}: свободно {row_data.free}, выручка {row_data.revenue}\n"
         ret += f"Общая выручка: {total_revenue}\n"
         occupancy = (
             Decimal(total_reserved)
@@ -61,12 +60,38 @@ class ConsoleHallView:
         most_popular_value = 0
         ret = "Статистика по местам:\n"
         for col, reserved in stats.items():
-            ret += f"Место {col + 1}: занято {reserved}\n"
+            ret += f"Место {col}: занято {reserved}\n"
             if reserved == most_popular_value:
                 most_popular.add(col)
             elif reserved >= most_popular_value:
                 most_popular = {col}
                 most_popular_value = reserved
-        most_popular_str = ", ".join(str(i + 1) for i in most_popular)
+        most_popular_str = ", ".join(map(str, most_popular))
         ret += f"Самые популярные места: {most_popular_str} ({most_popular_value} занято)"
+        return ret
+
+    def get_reserve(self, orders: list[list[int]]) -> str:
+        ret = "Бронирование:"
+        for row, seat in orders:
+            ret += f"\nБронирование ряд {row} место {seat}:\t"
+            try:
+                self.hall.set_reserved(row, seat, True)
+            except SeatNotExistsError:
+                ret += "Ошибка: место не существует"
+            except SeatReservedError:
+                ret += "Ошибка: место занято"
+            else:
+                ret += "Успешно"
+        return ret
+
+    def get_multi_order(self, k: int) -> str:
+        ret = "Места для компании:"
+        for row, (from_seat, to_seat) in self.hall.multi_order(k).items():
+            ret += f"\nРяд {row}\tместа {from_seat}-{to_seat}"
+        return ret
+
+    def get_lonely_seats(self) -> str:
+        ret = "Одинокие места:"
+        for seat in self.hall.lonely_seats():
+            ret += f"\nРяд {seat.row} место {seat.col}"
         return ret
