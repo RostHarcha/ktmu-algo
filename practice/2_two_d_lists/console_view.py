@@ -95,3 +95,8 @@ class ConsoleHallView:
         for seat in self.hall.lonely_seats():
             ret += f"\nРяд {seat.row} место {seat.col}"
         return ret
+
+    def get_best(self) -> str:
+        best = self.hall.find_best()
+        best_str = f"Ряд {best.row} место {best.col}" if best else "Не найдено"
+        return f"Лучшее место: {best_str}"

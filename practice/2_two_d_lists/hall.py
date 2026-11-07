@@ -111,3 +111,19 @@ class Hall:
                 right_lonley = col == len(row_data) - 1 or row_data[col + 1]
                 if left_lonely and right_lonley:
                     yield self._get_seat(row, col)
+
+    def find_best(self) -> Seat | None:
+        mid_row = len(self.rows) // 2 + 1
+        mid_col = self.total_seats // 2 + 1
+        min_delta =  len(self.rows) + self.total_seats
+        best_seat = None
+        for seat in self:
+            if seat.reserved:
+                continue
+            row_delta = abs(mid_row - seat.row)
+            col_delta = abs(mid_col - seat.col)
+            total_delta = row_delta + col_delta
+            if total_delta < min_delta:
+                min_delta = total_delta
+                best_seat = seat
+        return best_seat

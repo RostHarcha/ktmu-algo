@@ -31,6 +31,28 @@ orders: list[list[int]] = [
     [4, 0],
 ]
 
+def new_hall():
+    hall1 = [[0 for col in range(6)] for row in range(5)]
+    hall1[2][3] = 1
+    # [[0, 0, 0, 0, 0, 0],
+    #  [0, 0, 0, 0, 0, 0],
+    #  [0, 0, 0, 1, 0, 0],
+    #  [0, 0, 0, 0, 0, 0],
+    #  [0, 0, 0, 0, 0, 0]]
+
+    print(f"Зал 1: {hall1}")
+    hall2 = [[0] * 6] * 5
+    hall2[2][3] = 1
+    # [[0, 0, 0, 1, 0, 0],
+    #  [0, 0, 0, 1, 0, 0],
+    #  [0, 0, 0, 1, 0, 0],
+    #  [0, 0, 0, 1, 0, 0],
+    #  [0, 0, 0, 1, 0, 0]]
+    print(f"Зал 2: {hall2}")
+    # Результаты различаются, потому что hall2 создаеся с помощью ссылок:
+    # [[0] * 6] - создается список (неизменяемый объект в памяти - ссылка на него)
+    # при умножении его - копируется ссылка
+
 
 def main() -> None:
     hall = Hall(
@@ -55,6 +77,12 @@ def main() -> None:
     print(hall_view.get_multi_order(4))
     print("===")
     print(hall_view.get_lonely_seats())
+    print("===")
+    new_hall()
+    print("===")
+    print(hall_view.get_seating_plan())
+    print("===")
+    print(hall_view.get_best())
 
 
 if __name__ == "__main__":
